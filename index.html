@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Expropriation Lesson</title>
+  <script data-goatcounter="https://steffenhuck.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson-deep: #6B0F1A;
+      --crimson-mid: #8B1A26;
+      --crimson-light: #A52535;
+      --crimson-shadow: #3D0509;
+      --sepia: #C4956A;
+      --sepia-light: #D4A87A;
+      --cream: #F2E8D9;
+      --stage: #B89880;
+      --bg-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--crimson-mid);
+      background-image:
+        radial-gradient(ellipse at 20% 20%, var(--crimson-light) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, var(--crimson-shadow) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 30%, #9B1F2F 0%, transparent 40%),
+        radial-gradient(ellipse at 30% 70%, #5A0C15 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 10%, #7A1520 0%, transparent 35%);
+      min-height: 100vh;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--cream);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Velvet texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(
+          105deg,
+          transparent 0px,
+          rgba(255,255,255,0.012) 1px,
+          transparent 2px,
+          transparent 8px
+        ),
+        repeating-linear-gradient(
+          -75deg,
+          transparent 0px,
+          rgba(0,0,0,0.025) 1px,
+          transparent 2px,
+          transparent 12px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(30,0,5,0.45) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 70px;
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .series-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: var(--sepia);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0.85;
+    }
+
+    .title {
+      font-family: 'Cormorant SC', serif;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--sepia-light);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+    }
+
+    /* Cast */
+    .cast {
+      margin-bottom: 64px;
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .cast-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      color: var(--sepia);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+
+    .cast-list {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--cream);
+      opacity: 0.75;
+      line-height: 1.9;
+      letter-spacing: 0.04em;
+    }
+
+    /* Play body */
+    .play-body {
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    /* Stage directions */
+    .stage {
+      font-style: italic;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--stage);
+      line-height: 1.75;
+      margin: 28px 0 20px;
+      padding-left: 2px;
+    }
+
+    .stage:first-child {
+      margin-top: 0;
+    }
+
+    /* Speech blocks */
+    .speech {
+      margin: 0 0 4px 0;
+    }
+
+    .speaker {
+      font-family: 'Cormorant SC', serif;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      color: var(--sepia);
+      margin-bottom: 5px;
+      margin-top: 22px;
+      display: block;
+    }
+
+    .lines {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--cream);
+      letter-spacing: 0.01em;
+    }
+
+    .lines p {
+      margin: 0;
+    }
+
+    /* Inline stage direction within speech */
+    .aside {
+      font-style: italic;
+      font-size: 14px;
+      color: var(--stage);
+      display: block;
+      margin: 4px 0;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+      animation-delay: 1.2s;
+    }
+
+    .footer a {
+      font-family: 'Cormorant SC', serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--sepia);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .footer a:hover {
+      opacity: 1;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 60px 28px 80px;
+      }
+      .lines {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1 class="title">The Expropriation Lesson</h1>
+      <div class="subtitle">A Play</div>
+    </div>
+
+    <div class="cast">
+      <div class="cast-label">Cast</div>
+      <div class="cast-list">
+        The Instructor &nbsp;·&nbsp; The New Pharaoh &nbsp;·&nbsp; Henry VIII<br>
+        The Other Students &nbsp;·&nbsp; The New Student &nbsp;·&nbsp; The First Student
+      </div>
+    </div>
+
+    <div class="play-body">
+
+      <p class="stage">(A classroom at the Institute for the Advancement of Dictatorships. A whiteboard at the front. The students sit at small desks. Morning light falls across the lake. The Instructor stands by the whiteboard. On it, in large letters: MONEY.)</p>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>Today we talk about money.</p>
+          <p>Some of you will inherit it.</p>
+          <p>Some of you will take it.</p>
+          <p>The distinction, as you will learn, is largely ceremonial.</p>
+        </div>
+      </div>
+
+      <p class="stage">(He pauses.)</p>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>Some of you will remember our field trip to Cairo.</p>
+          <p>Our host on that occasion has kindly agreed to visit us today.</p>
+          <p>Please welcome the New Pharaoh.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The New Pharaoh enters. He nods once. He does not smile. He takes a chair to the side — not at the front, not among the students. Slightly apart.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Good morning.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The students echo his greeting.)</p>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>We are also joined today by a guest from another age.</p>
+          <p>A king. A reformer. A man who understood that the church was, above all, a balance sheet.</p>
+          <p>His Majesty, Henry the Eighth.</p>
+        </div>
+      </div>
+
+      <p class="stage">(Henry VIII enters. He is large. He looks at the whiteboard, then at the New Pharaoh, then at the students. He picks up a marker and adds, beneath MONEY, the word: MINE.)</p>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>Your Majesty, perhaps you could begin by telling the students how you approached the question of —</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I dissolved the monasteries.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>Yes. And —</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>All of them.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The Other Students</span>
+        <div class="lines">
+          <p>All of them.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Eight hundred and eighty-six.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>On what grounds?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <span class="aside">(turning to look at him)</span>
+          <p>Corruption. Moral laxity. The will of God.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>Which was it?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>All three. In that order of convenience.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The First Student looks at Henry VIII.)</p>
+
+      <div class="speech">
+        <span class="speaker">The First Student</span>
+        <div class="lines">
+          <p>What did you take?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Land. Buildings. Gold, silver, livestock. All of it. Overnight.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <span class="aside">(quietly)</span>
+          <p>Overnight is careless.</p>
+        </div>
+      </div>
+
+      <p class="stage">(A brief silence. Henry VIII turns to look at him.)</p>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I beg your pardon?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>It draws attention.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The Other Students</span>
+        <div class="lines">
+          <p>Attention.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>You wrote it on the board.</p>
+        </div>
+      </div>
+
+      <p class="stage">(He gestures toward the whiteboard.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>That is the mistake.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I took what was mine by right and by God.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>When you took it, everybody knew it.</p>
+        </div>
+      </div>
+
+      <p class="stage">(A pause.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>Is that not unavoidable?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>No.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>But surely people see —</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>There is nothing to see.</p>
+          <p>No villas. No yachts. No gold on the walls.</p>
+          <p>Nothing that was not there before.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>Then where does it go?</p>
+        </div>
+      </div>
+
+      <p class="stage">(The New Pharaoh looks at him for a moment.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>That is precisely the point.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I beg your pardon.</p>
+          <p>I am the Supreme Head of the Church of England.</p>
+          <p>I remade the law of this kingdom in my own image.</p>
+          <p>And you stand there and tell me I was careless.</p>
+        </div>
+      </div>
+
+      <p class="stage">(He pauses, breathing heavily.)</p>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>In my time I would have had you arrested before breakfast.</p>
+          <p>Charged by noon.</p>
+          <p>Tried by evening.</p>
+          <p>And beheaded before the sun went down.</p>
+        </div>
+      </div>
+
+      <p class="stage">(A pause.)</p>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>With an audience.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Of course you would.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The New Student turns to the New Pharaoh.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>You have not told us yet where the money goes.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>And I will not.</p>
+          <p>But trust me, children, it is there.</p>
+          <p>And it is a lot.</p>
+          <p>More than he could ever dream of.</p>
+        </div>
+      </div>
+
+      <p class="stage">(Henry VIII looks at him.)</p>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Your suit looks so cheap.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The First Student</span>
+        <div class="lines">
+          <p>I think that might be the point, Your Majesty.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The Instructor clears his throat.)</p>
+
+      <div class="speech">
+        <span class="speaker">The Instructor</span>
+        <div class="lines">
+          <p>Gentlemen. Can we turn to taxation now?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <span class="aside">(brightening)</span>
+          <p>Taxation. Yes.</p>
+          <p>A fine instrument.</p>
+          <p>I taxed the clergy.</p>
+          <p>I taxed the merchants.</p>
+          <p>I taxed the peasants.</p>
+          <p>I taxed the peasants again.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The Other Students</span>
+        <div class="lines">
+          <p>Again.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>A kingdom runs on revenue.</p>
+          <p>Without revenue there is no navy.</p>
+          <p>Without a navy there is no kingdom.</p>
+          <p>It is very simple.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>And did they pay?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Not always willingly.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The First Student</span>
+        <div class="lines">
+          <p>There were rebellions.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>There were suppressions.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The New Student turns to the New Pharaoh.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>And you? What do you tax?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <span class="aside">(a brief pause)</span>
+          <p>We do not tax.</p>
+          <p>We subsidise.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>I beg your pardon?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Fuel. Bread.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>But then how —</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <span class="aside">(unable to contain himself)</span>
+          <p>You do not tax?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>No.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Not at all?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Not meaningfully.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>But how do you fund your navy?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>We have no navy worth speaking of.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Your armies then.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>My armies have interests.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>What kind of interests?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Various.</p>
+        </div>
+      </div>
+
+      <p class="stage">(A pause.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>They build things.</p>
+          <p>They sell things.</p>
+          <p>Everybody is kept busy.</p>
+          <p>And everybody is content.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I don't understand you at all.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>I know.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Student</span>
+        <div class="lines">
+          <p>In my mother's country, people are taxed.</p>
+          <p>Heavily, sometimes.</p>
+          <p>She was elected on a promise to tax the rich.</p>
+          <p>And she kept that promise.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>I was elected as well.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>Elected?</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Twice.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The New Pharaoh turns to the New Student.)</p>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>And if I may —</p>
+          <p>your mother is playing a dangerous game.</p>
+          <p>You want the rich by your side.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">Henry VIII</span>
+        <div class="lines">
+          <p>I made people rich.</p>
+        </div>
+      </div>
+
+      <div class="speech">
+        <span class="speaker">The New Pharaoh</span>
+        <div class="lines">
+          <p>Finally we have something in common.</p>
+        </div>
+      </div>
+
+      <p class="stage">(The First Student leans toward the New Student and whispers.)</p>
+
+      <div class="speech">
+        <span class="speaker">The First Student</span>
+        <div class="lines">
+          <p>Your best friends are friends that depend on you.</p>
+        </div>
+      </div>
+
+    </div><!-- end play-body -->
+
+    <div class="footer">
+      <a href="https://steffenhuck.github.io/">steffen huck</a>
+    </div>
+
+  </div>
+</body>
+</html>
